@@ -83,6 +83,7 @@ variable "apis_to_enable" {
     "iam.googleapis.com",                  
     "cloudbuild.googleapis.com",         
     "artifactregistry.googleapis.com",   
-    "storage.googleapis.com",            
+    "storage.googleapis.com",       
+    "secretmanager.googleapis.com",
   ]
 }

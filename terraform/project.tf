@@ -24,6 +24,7 @@ resource "google_project_service" "apis" {
     "stackdriver.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
+    "secretmanager.googleapis.com",
     "servicenetworking.googleapis.com", # For Private Service Access
     "assuredworkloads.googleapis.com"   # API for Assured Workloads
   ])
