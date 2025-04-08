@@ -1,0 +1,27 @@
+
+# -----------------------------------------------------------------------------
+# Sample terraform.tfvars file
+# -----------------------------------------------------------------------------
+# --- Required Variables ---
+org_id              = "123456789012"               # Replace with your numeric Google Cloud Organization ID
+billing_account_id  = "010101-ABCABC-DEFDEF"       # Replace with your Billing Account ID
+new_project_id      = "your-unique-project-id-123" # Replace with a globally unique ID for the new project
+
+
+
+
+# --- Optional Base Variables (Defaults are often suitable) ---
+new_project_name    = "My Terraform Deployed Project" # Optional: Human-readable name (defaults to project ID if unset)
+# new_project_folder_id = "folders/9876543210"        # Optional: Uncomment and replace if creating project in a specific folder
+
+# --- Optional GCS Variables (Defaults are often suitable) ---
+gcs_bucket_location = "US-CENTRAL1"                  # Optional: Change GCS bucket location if needed
+gcs_storage_name    = "your-unique-project-id-123-tf-state" # Optional: Explicitly set bucket name (defaults based on project name/id)
+
+# --- Optional Artifact Registry Variables (Defaults are often suitable) ---
+artifact_registry_location = "us-central1"           # Optional: Change Artifact Registry location if needed
+# artifact_registry_repo_id  = "my-app-artifacts"    # Optional: Change repository ID if needed (default is "cloud-build-artifacts")
+
+# --- Optional Cloud Build Service Account Variables (Defaults are often suitable) ---
+# custom_sa_id            = "my-custom-deploy-sa"    # Optional: Change SA ID if needed (default is "terraform-deploy-sa")
+# custom_sa_display_name  = "My Custom Deploy SA"    # Optional: Change SA display name if needed
