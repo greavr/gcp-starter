@@ -22,7 +22,7 @@ variable "org_id" {
 variable "assured_workloads_folder_id" {
   description = "The Folder ID of the pre-configured Assured Workloads environment (e.g., 'folders/123456789')."
   type        = string
-  # Mandatory - Obtain this from your GCP Organization console
+  default     = null
 }
 
 variable "regions" {
@@ -36,10 +36,14 @@ variable "regions" {
       name          = "us-east1"
       gke_node_zones = ["us-east1-b", "us-east1-c", "us-east1-d"]
     }
-    "me-central2" = {
-      name          = "me-central2"
-      gke_node_zones = ["me-central2-a", "me-central2-b", "me-central2-c"]
+    "us-west2" = {
+      name          = "us-west2"
+      gke_node_zones = ["us-west2-a", "us-west2-b", "us-west2-c"]
     }
+    # "me-central2" = {
+    #   name          = "me-central2"
+    #   gke_node_zones = ["me-central2-a", "me-central2-b", "me-central2-c"]
+    # }
   }
 }
 
@@ -74,6 +78,29 @@ variable "gke_max_node_count_per_zone" {
   default     = 3
 }
 
+variable "node_disk_size_gb" {
+  description = "Disk size for GKE nodes in GB."
+  type        = number
+  default     = 100
+}
+
+variable "node_disk_type" {
+  description = "Disk type for GKE nodes (e.g., pd-standard, pd-ssd, pd-balanced)."
+  type        = string
+  default     = "pd-balanced" #pd-standard, pd-balanced, pd-ssd
+}
+
+variable "node_network_tags" {
+  description = "List of network tags to apply to the nodes for firewall rules."
+  type        = list(string)
+  default     = ["gke-node", "private-node"] 
+}
+
+variable "node_taints" {
+  description = "List of node taints"
+  type        = list(string)
+  default     = [] 
+}
 
 # ----------------------------------------------------------------------------------------------------------------------
 # GCS Base Variables
@@ -81,7 +108,7 @@ variable "gke_max_node_count_per_zone" {
 variable "gcs_storage_name" {
   description = "GCS Storage Bucket Name"
   type        = string
-  default     = "${local.project_id}-gcs"
+  default     = "-gcs"
 }
 
 

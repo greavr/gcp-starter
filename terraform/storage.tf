@@ -2,7 +2,7 @@
 resource "google_storage_bucket" "bucket" {
   project                     = google_project.new_project.project_id
   for_each                    = var.regions
-  name                        = "${var.gcs_storage_name}-${each.value.name}"
+  name                        = "${google_project.new_project.project_id}-${var.gcs_storage_name}-${each.value.name}"
   location                    = each.value.name
   force_destroy               = true 
   storage_class               = "STANDARD" 

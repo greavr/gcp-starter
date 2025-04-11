@@ -2,23 +2,23 @@
 resource "google_container_cluster" "gke_cluster" {
   project                  = google_project.new_project.project_id
   for_each                 = var.regions
-  name                     = "${local.project_id}-gke-${each.key}"
-  location                 = each.value.name # Use region for cluster control plane
-  remove_default_node_pool = true           # We define our own node pool
+  name                     = "${each.key}-gke"
+  location                 = each.value.name 
+  remove_default_node_pool = true           
   initial_node_count       = 1              # Required, but we remove default pool anyway
 
   network    = google_compute_network.vpc_network[each.key].id
   subnetwork = google_compute_subnetwork.subnet[each.key].id
 
   # Enable Cloud Operations for GKE (Logging, Monitoring)
-  logging_service    = "logging.googleapis.com/kubernetes" # Recommended GKE logging service
-  monitoring_service = "monitoring.googleapis.com/kubernetes" # Recommended GKE monitoring service
+  logging_service    = "logging.googleapis.com/kubernetes" 
+  monitoring_service = "monitoring.googleapis.com/kubernetes" 
 
   #Configure Private Cluster if needed
   private_cluster_config {
     enable_private_nodes    = true
     enable_private_endpoint = false # Or true if control plane should only be private
-    master_ipv4_cidr_block  = cidrsubnet("172.16.0.0/24", 8, index(keys(var.regions), each.key)+0) # Unique /28 range for master
+    master_ipv4_cidr_block  = cidrsubnet("172.16.0.0/24", 4, index(keys(var.regions), each.key)+0) # Unique /28 range for master
   }
 
   # master_authorized_networks_config { # Restrict control plane access if public endpoint
@@ -41,9 +41,9 @@ resource "google_container_node_pool" "primary_node_pool" {
   project    = google_project.new_project.project_id
   for_each   = var.regions
   name       = "${local.project_id}-node-pool-${each.key}"
-  location   = each.value.name       # Match cluster region
+  location   = each.value.name      
   cluster    = google_container_cluster.gke_cluster[each.key].name
-  node_count = var.gke_node_count_per_zone # Will create this many nodes *per zone* specified below
+  node_count = var.gke_node_count_per_zone 
 
   # Distribute nodes across specified zones in the region
   node_locations = each.value.gke_node_zones
@@ -56,19 +56,31 @@ resource "google_container_node_pool" "primary_node_pool" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
 
+    # --- Shielded Instance Configuration ---
+    shielded_instance_config {
+      enable_secure_boot          = true
+      enable_integrity_monitoring = true 
+    }
+
     # Standard Logging & Monitoring Agent Config
-    logging_variant = "DEFAULT" # Or MAX_THROUGHPUT
+    logging_variant = "DEFAULT"
     metadata = {
       disable-legacy-endpoints = "true"
     }
     # Add labels or taints if needed
     # labels = { ... }
-    # taints = [ ... ]
+    # taints = var.node_taints
+
+    # Network tags can be crucial for firewall rules in private clusters
+    tags = var.node_network_tags 
+
+    disk_size_gb = var.node_disk_size_gb
+    disk_type    = var.node_disk_type
   }
 
   management {
     auto_repair  = true
-    auto_upgrade = true # Recommended for security and feature updates
+    auto_upgrade = true 
   }
 
   # Configure Autoscaling

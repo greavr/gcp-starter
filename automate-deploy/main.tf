@@ -43,6 +43,26 @@ resource "google_storage_bucket" "build_artifacts_bucket" {
   }
 }
 
+# 3.1 Create the GCS bucket in the new project
+resource "google_storage_bucket" "saas_terraform_bucket" {
+  depends_on = [google_project_service.apis["storage.googleapis.com"]]
+
+  project       = google_project.new_project.project_id
+  name          = "${google_project.new_project.project_id}-terraform"
+  location      = var.gcs_bucket_location
+  force_destroy = false 
+
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle {
+    prevent_destroy = false # Set to true for production buckets to prevent accidental deletion
+  }
+}
+
 # 4. Create the Artifact Registry repository in the new project
 resource "google_artifact_registry_repository" "artifact_repo" {
   depends_on = [google_project_service.apis["artifactregistry.googleapis.com"]]

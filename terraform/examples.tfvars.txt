@@ -1,0 +1,55 @@
+# -----------------------------------------------------------------------------
+# Sample terraform.tfvars file for Multi-Region & Assured Workloads Setup
+# -----------------------------------------------------------------------------
+
+# --- Required Base Variables ---
+billing_account = "010101-ABCABC-DEFDEF" 
+org_id = "123456789012" 
+
+# --- Optional Base Variables ---
+project_id_prefix = "my-assured-app-" # Optional: Customize the prefix for generated project IDs
+# assured_workloads_folder_id = "folders/9876543210" # Optional: Replace with your Assured Workloads Folder ID
+
+# --- Optional Region Configuration ---
+# Modify this map to define the regions and zones you want to deploy to.
+# Ensure the primary_region below exists as a key here.
+regions = {
+    "us-east1" = {
+      name          = "us-east1"
+      gke_node_zones = ["us-east1-b", "us-east1-c", "us-east1-d"]
+    }
+    "me-central2" = {
+      name          = "me-central2"
+      gke_node_zones = ["me-central2-a", "me-central2-b", "me-central2-c"]
+  }
+}
+
+primary_region = "us-central1" # Optional: Must match one of the keys in the 'regions' map above
+
+# --- Optional GKE Variables ---
+gke_machine_type          = "e2-standard-8" 
+gke_node_count_per_zone   = 2               
+gke_max_node_count_per_zone = 5               
+
+
+# --- Optional GCS Variables ---
+# gcs_storage_name = "my-assured-app-custom-gcs" # Optional: Provide a specific GCS bucket name override
+
+
+# --- Optional Cloud SQL Variables ---
+postgres_version = "POSTGRES_16"         
+db_machine_type  = "db-custom-2-7680"    
+db_disk_size     = 50                    
+
+
+# --- Optional MemoryStore (Redis) Variables ---
+redis_tier           = "STANDARD_HA" 
+redis_memory_size_gb = 2             
+
+
+# --- Optional Firestore Variables ---
+firestore_location = "us-central1" 
+
+
+# --- Optional Artifact Repository Variables ---
+artifact_repo_format = "DOCKER" 

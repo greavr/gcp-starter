@@ -51,38 +51,3 @@ output "artifact_registry_mirror_repo_names" {
   description = "Full names of the mirror Artifact Registry repositories."
   value       = { for k, repo in google_artifact_registry_repository.mirror_repo : k => repo.name }
 }
-
-# REMOVED: postgres_root_password output
-# output "postgres_root_password" { ... }
-
-# --- HA VPN Outputs ---
-# (VPN outputs remain the same as before)
-
-output "gcp_ha_vpn_gateway_ips" {
-  description = "Public IP addresses of the GCP HA VPN Gateway interfaces (Use these for AWS Customer Gateway configuration)."
-  value = {
-    for k, gw in google_compute_ha_vpn_gateway.gcp_ha_gateway : k => {
-      interface_0 = gw.vpn_interfaces[0].ip_address
-      interface_1 = gw.vpn_interfaces[1].ip_address
-    }
-  }
-}
-
-output "vpn_tunnel_shared_secrets" {
-  description = "Generated shared secrets for each VPN tunnel (Use these for AWS VPN Connection configuration)."
-  value = {
-    for k, secret in random_password.vpn_shared_secret : k => secret.result
-  }
-  sensitive = true
-}
-
-output "vpn_tunnel_names_and_bgp_ips" {
-  description = "Mapping of GCP VPN tunnel names to their BGP interface IPs."
-  value = {
-    for k, tunnel in google_compute_vpn_tunnel.tunnel : tunnel.name => {
-      gcp_bgp_ip = google_compute_router_interface.router_interface[k].ip_range
-      aws_bgp_ip = google_compute_router_peer.bgp_peer[k].peer_ip_address
-      region     = tunnel.region
-    }
-  }
-}

@@ -34,7 +34,7 @@ steps:
     args:
       - 'cp'
       - 'terraform/tfplan'
-      - 'gs://${_BUCKET_NAME}/plans/tfplan-$BUILD_ID'
+      - 'gs://${_BUCKET_NAME}/plans/tfplan-${_CUSTOMER}/$BUILD_ID'
     id: 'upload-tfplan'
     waitFor: ['terraform-plan'] # Ensure plan exists before uploading
 
@@ -43,20 +43,22 @@ steps:
     args:
       - 'apply'
       - '-auto-approve'
-      - 'tfplan' # Apply the plan saved in the previous step
+      - 'tfplan' 
     dir: 'terraform' 
     id: 'terraform-apply'
     waitFor: ['terraform-plan']
 
 
 substitutions:
-  _BUCKET_NAME: 'your-gcs-bucket-name'                  # <-- Replace with your GCS bucket name
-  _VARS_FILE_GCS_PATH: 'path/to/your/terraform.tfvars'  # <-- Replace with the path within the bucket (e.g., config/production.tfvars)
-  _VARS_FILE_NAME: 'terraform.tfvars'                   # <-- Replace with the actual filename (e.g., production.tfvars)
-  _TERRAFORM_VERSION: '1.8.2'                           # <-- Specify the Terraform version you want to use (check for latest stable)
+  _BUCKET_NAME: '${PROJECT_ID}-terraform'                 
+  _VARS_FILE_GCS_PATH: 'prod'  
+  _VARS_FILE_NAME: 'terraform.tfvars'                  
+  _TERRAFORM_VERSION: '1.8.2'
+  _CUSTOMER: 'default'
 
 # Optional: Specify timeout for the build
 timeout: '1200s'
 
-# Optional: Specify the service account Cloud Build should use.
-serviceAccount: 'projects/your-project-id/serviceAccounts/your-custom-service-account@your-project-id.iam.gserviceaccount.com'
+options:
+  logging: GCS  
+  logsBucket: 'gs://${PROJECT_ID}-terraform/logs'  
