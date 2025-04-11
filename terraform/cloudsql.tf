@@ -30,7 +30,7 @@ resource "google_sql_database_instance" "postgres_ha" {
     # Network Configuration - Private IP recommended for security
     ip_configuration {
       ipv4_enabled    = false        # Disable public IP
-      private_network = google_compute_network.vpc_network[each.key].id
+      private_network = google_compute_network.vpc_network.id
       # authorized_networks = [] # Not needed with private IP only
       # require_ssl = true # Enforce SSL connections
     }

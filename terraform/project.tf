@@ -1,10 +1,18 @@
+# Define local variable for clarity (optional, but recommended)
+locals {
+  # Determine if a valid folder_id was provided
+  use_folder = var.assured_workloads_folder_id != null && var.assured_workloads_folder_id != ""
+}
+
+
+
 # Create the new Google Cloud Project within the Assured Workloads folder
 resource "google_project" "new_project" {
   project_id      = local.project_id
   name            = local.project_id
   billing_account = var.billing_account
-  folder_id       = var.assured_workloads_folder_id # Assign project to the AW folder
-  org_id          = var.org_id                      # Org ID is required when using folder_id
+  folder_id       = local.use_folder ? var.assured_workloads_folder_id : null
+  org_id          = local.use_folder ? null : var.org_id
 }
 
 # Enable required APIs for the project

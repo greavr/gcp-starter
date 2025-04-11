@@ -40,6 +40,9 @@ This terraform will deploy the following resources:
         * Subnet 2: Zone `us-west2-b`
         * Subnet 3: Zone `us-west2-c`
     * [Documentation: Subnets](https://cloud.google.com/vpc/docs/subnets)
+* **Create a NAT Instance Per Region**
+    * Option in the Variables to make a regional NAT
+    * [Documentation: Cloud Nat](https://cloud.google.com/nat/docs/overview)
 
 * **Configure Private Services Access:** Set up a private connection from your VPC to Google-managed services (like Cloud SQL and Memorystore). This involves allocating an IP range within your VPC for these services.
     * [Documentation: Private Services Access](https://cloud.google.com/vpc/docs/private-services-access)
@@ -199,4 +202,4 @@ To tear down the infrastructure created by Terraform:
 * **Security:** Do **not** commit `terraform.tfvars` files containing sensitive information like `billing_account` directly to your Git repository if it's public or shared widely. Use environment variables (`export TF_VAR_billing_account=...`) or a secure secrets management system for CI/CD pipelines.
 * **Assured Workloads:** If using `assured_workloads_folder_id`, ensure the chosen regions (`regions` variable) and service locations (`firestore_location`) comply with the requirements of that specific Assured Workloads environment (e.g., FedRAMP, IL4, HIPAA).
 * **API Enablement:** Terraform attempts to enable necessary GCP APIs. This can sometimes take a few minutes. If you encounter API-related errors on the first run, waiting a few minutes and running `terraform apply` again might resolve the issue.
-* **Project ID:** A rand
+* **Project ID:** A random suffix is appended to `project_id_prefix` to ensure uniqueness. The final project ID will be displayed in the Terraform output.

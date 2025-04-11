@@ -7,12 +7,15 @@ resource "google_container_cluster" "gke_cluster" {
   remove_default_node_pool = true           
   initial_node_count       = 1              # Required, but we remove default pool anyway
 
-  network    = google_compute_network.vpc_network[each.key].id
+  network    = google_compute_network.vpc_network.id
   subnetwork = google_compute_subnetwork.subnet[each.key].id
 
   # Enable Cloud Operations for GKE (Logging, Monitoring)
   logging_service    = "logging.googleapis.com/kubernetes" 
   monitoring_service = "monitoring.googleapis.com/kubernetes" 
+
+  # --- Disable Deletion Protection ---
+  deletion_protection = false
 
   #Configure Private Cluster if needed
   private_cluster_config {
@@ -40,10 +43,11 @@ resource "google_container_cluster" "gke_cluster" {
 resource "google_container_node_pool" "primary_node_pool" {
   project    = google_project.new_project.project_id
   for_each   = var.regions
-  name       = "${local.project_id}-node-pool-${each.key}"
+  name       = "${each.key}-${substr(var.gke_machine_type, 0, length(var.gke_machine_type) - 2)}"
   location   = each.value.name      
   cluster    = google_container_cluster.gke_cluster[each.key].name
   node_count = var.gke_node_count_per_zone 
+  
 
   # Distribute nodes across specified zones in the region
   node_locations = each.value.gke_node_zones
@@ -62,6 +66,7 @@ resource "google_container_node_pool" "primary_node_pool" {
       enable_integrity_monitoring = true 
     }
 
+    
     # Standard Logging & Monitoring Agent Config
     logging_variant = "DEFAULT"
     metadata = {

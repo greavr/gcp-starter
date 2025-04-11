@@ -12,7 +12,7 @@ resource "google_redis_instance" "redis_ha" {
   region = each.value.name
 
   # Network Configuration - Private IP required for Redis
-  authorized_network = google_compute_network.vpc_network[each.key].id
+  authorized_network = google_compute_network.vpc_network.id
   connect_mode       = "PRIVATE_SERVICE_ACCESS"
 
   redis_version    = "REDIS_7_0" # Or other supported version
@@ -29,6 +29,7 @@ resource "google_redis_instance" "redis_ha" {
   depends_on = [
     google_project_service.apis,
     google_compute_network.vpc_network,
+    null_resource.wait_for_psa,
     # Dependency on service networking API being enabled
     google_project_service.apis["servicenetworking.googleapis.com"]
   ]
