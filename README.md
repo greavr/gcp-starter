@@ -97,8 +97,8 @@ This terraform will deploy the following resources:
 
 1.  **Clone the Repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-directory>/terraform
+    git clone https://github.com/greavr/gcp-starter
+    cd gcp-starter/terraform
     ```
 
 2.  **Create a Variables File:** Terraform loads variables from files named `terraform.tfvars` or `*.auto.tfvars` automatically. Create a file named `terraform.tfvars` in the root of the repository.
