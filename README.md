@@ -156,19 +156,19 @@ This terraform will deploy the following resources:
 
 2.  **Plan Changes:** Review the resources Terraform will create or modify. If you didn't name your variables file `terraform.tfvars`, use the `-var-file` flag.
     ```bash
-    terraform plan # Reads terraform.tfvars automatically
+    terraform plan 
     # or
-    # terraform plan -var-file="my-vars.tfvars"
+    terraform plan -var-file="my-vars.tfvars"
     ```
 
 3.  **Apply Changes:** Create the infrastructure. You will be prompted to confirm unless you use `-auto-approve`.
     ```bash
-    terraform apply # Reads terraform.tfvars automatically
+    terraform apply 
     # or
-    # terraform apply -var-file="my-vars.tfvars"
+    terraform apply -var-file="my-vars.tfvars"
 
     # To skip confirmation (use with caution):
-    # terraform apply -auto-approve
+    terraform apply -auto-approve
     ```
 
     Terraform will output useful information, such as the created project ID, GKE cluster details, database names, etc.
@@ -179,18 +179,18 @@ To tear down the infrastructure created by Terraform:
 
 1.  **Plan Destruction:** See what will be destroyed.
     ```bash
-    terraform plan -destroy # Reads terraform.tfvars automatically
+    terraform plan -destroy 
     # or
-    # terraform plan -destroy -var-file="my-vars.tfvars"
+    terraform plan -destroy -var-file="my-vars.tfvars"
     ```
 2.  **Destroy:** Remove all managed resources. **This is irreversible.**
     ```bash
-    terraform destroy # Reads terraform.tfvars automatically
+    terraform destroy 
     # or
-    # terraform destroy -var-file="my-vars.tfvars"
+    terraform destroy -var-file="my-vars.tfvars"
 
     # To skip confirmation (use with caution):
-    # terraform destroy -auto-approve
+    terraform destroy -auto-approve
     ```
 
 ## Important Notes
